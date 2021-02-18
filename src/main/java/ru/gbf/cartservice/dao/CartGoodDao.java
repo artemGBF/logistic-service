@@ -1,14 +1,10 @@
 package ru.gbf.cartservice.dao;
 
 import lombok.AllArgsConstructor;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.gbf.cartservice.model.CartGood;
-import ru.gbf.cartservice.model.GoodStock;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,10 +37,10 @@ public class CartGoodDao {
         );
     }
 
-    public void order(List<CartGood> collect) {
-        Map<String, Object>[] init = init(collect);
-        jdbcTemplate.batchUpdate(
-                "update cart_good SET count = :count where id_good = :good and id_cart = :stock;",
+    public void clear(Long idCart) {
+        Map<String, Object> init = Map.of("cart", idCart);
+        jdbcTemplate.update(
+                "delete from cart_good where id_cart = :cart;",
                 init
         );
     }
