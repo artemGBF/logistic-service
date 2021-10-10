@@ -5,12 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@NoArgsConstructor
 @Getter
 @Setter
-public class AddGoodsDto {
-    private Long idGood;
-    private Long idCart;
-    private Integer count;
+@AllArgsConstructor
+@NoArgsConstructor
+public class OrderGoodsDTO {
+    private Long orderId;
+    private Long goodId;
+    private int count;
 }
