@@ -12,27 +12,15 @@ import java.util.Map;
 
 @Repository
 @AllArgsConstructor
-public class StockGoodDao {
+public class StockGoodDAO {
     private final StockGoodRepository repository;
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    private Map<String, Object>[] init(List<StockGood> list) {
-        Map<String, Object>[] params = new Map[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            params[i] = new HashMap<>();
-            StockGood stockGood = list.get(i);
-            params[i].put("stock", stockGood.getIdStock());
-            params[i].put("good", stockGood.getIdGood());
-            params[i].put("count", stockGood.getCount());
-        }
-        return params;
-    }
-
     public Long check(StockGood stockGood) {
         return repository.check(
-                stockGood.getIdStock(),
-                stockGood.getIdGood()
+                stockGood.getStockId(),
+                stockGood.getGoodId()
         );
     }
 
@@ -40,12 +28,12 @@ public class StockGoodDao {
         Map<String, Object> init = new HashMap<>();
         init.put("ids", ids);
         List<Map<Long, Long>> query = jdbcTemplate.query(
-                "select id_good, count from stock_good where id_stock = 1 and id_good in (:ids)",
+                "select good_id, count from xref_stock_2_goods where stock_id = 1 and good_id in (:ids)",
                 init,
                 (resultSet, i) -> {
                     Map<Long, Long> res = new HashMap<>();
                     res.put(
-                            resultSet.getLong("id_good"),
+                            resultSet.getLong("good_id"),
                             resultSet.getLong("count")
                     );
                     return res;
@@ -59,9 +47,9 @@ public class StockGoodDao {
     public void fill(List<StockGood> collect) {
         Map<String, Object>[] init = init(collect);
         jdbcTemplate.batchUpdate(
-                "INSERT INTO stock_good VALUES (:stock, :good, :count)" +
-                        "ON CONFLICT(id_stock, id_good) DO UPDATE SET count = :count + " +
-                        "(select count from stock_good gc where gc.id_good = :good and gc.id_stock = :stock);",
+                "INSERT INTO xref_stock_2_goods VALUES (:stock, :good, :count)" +
+                        "ON CONFLICT(stock_id, good_id) DO UPDATE SET count = :count + " +
+                        "(select count from xref_stock_2_goods gc where gc.good_id = :good and gc.stock_id = :stock);",
                 init
         );
     }
@@ -69,10 +57,22 @@ public class StockGoodDao {
     public void order(List<StockGood> collect) {
         Map<String, Object>[] init = init(collect);
         jdbcTemplate.batchUpdate(
-                "update stock_good SET count = - :count + " +
-                        "(select count from stock_good gc where gc.id_good = :good and gc.id_stock = :stock)" +
-                        "where id_good = :good and id_stock = :stock;",
+                "update xref_stock_2_goods SET count = - :count + " +
+                        "(select count from xref_stock_2_goods gc where gc.good_id = :good and gc.stock_id = :stock)" +
+                        "where good_id = :good and stock_id = :stock;",
                 init
         );
+    }
+
+    private Map<String, Object>[] init(List<StockGood> list) {
+        Map<String, Object>[] params = new Map[list.size()];
+        for (int i = 0; i < list.size(); i++) {
+            params[i] = new HashMap<>();
+            StockGood stockGood = list.get(i);
+            params[i].put("stock", stockGood.getStockId());
+            params[i].put("good", stockGood.getGoodId());
+            params[i].put("count", stockGood.getCount());
+        }
+        return params;
     }
 }

@@ -7,7 +7,7 @@ import ru.gbf.logisticservice.model.StockGood;
 
 public interface StockGoodRepository extends CrudRepository<StockGood, Long> {
 
-    @Query("select gc.count from stock_good gc where gc.id_good = :idGood and gc.id_stock=:idStock")
+    @Query("select gc.count from xref_stock_2_goods gc where gc.good_id = :idGood and gc.stock_id=:idStock")
     Long check(@Param("idStock") Long idStock, @Param("idGood") Long idGood);
 
 }

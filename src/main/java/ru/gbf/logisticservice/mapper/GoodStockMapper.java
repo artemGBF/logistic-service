@@ -12,8 +12,8 @@ public class GoodStockMapper {
 
     public StockGoodDto toDto(StockGood stockGood) {
         return new StockGoodDto(
-                stockGood.getIdGood(),
-                stockGood.getIdStock(),
+                stockGood.getGoodId(),
+                stockGood.getStockId(),
                 stockGood.getCount()
         );
     }
@@ -24,8 +24,8 @@ public class GoodStockMapper {
 
     public StockGood toEntity(StockGoodDto dto){
         return new StockGood(
-                dto.getIdGood(),
-                dto.getIdStock(),
+                dto.getGoodId(),
+                dto.getStockId(),
                 dto.getCount()
         );
     }

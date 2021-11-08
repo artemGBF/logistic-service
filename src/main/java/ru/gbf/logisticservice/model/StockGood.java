@@ -6,15 +6,15 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table("stock_good")
-@AllArgsConstructor
-@NoArgsConstructor
+
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@Table("xref_stock_2_goods")
 public class StockGood {
-
-    private Long idGood;
-    private Long idStock;
+    private Long goodId;
+    private Long stockId;
     private Integer count;
 }
 

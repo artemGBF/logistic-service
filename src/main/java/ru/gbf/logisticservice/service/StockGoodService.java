@@ -2,24 +2,23 @@ package ru.gbf.logisticservice.service;
 
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.gbf.logisticservice.dao.StockGoodDao;
+import ru.gbf.logisticservice.dao.StockGoodDAO;
 import ru.gbf.logisticservice.dto.CountDto;
 import ru.gbf.logisticservice.dto.StockGoodDto;
 import ru.gbf.logisticservice.mapper.GoodStockMapper;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
 public class StockGoodService {
-    private final StockGoodDao stockGoodDao;
+    private final StockGoodDAO stockGoodDao;
     private final GoodStockMapper mapper;
 
     public CountDto check(StockGoodDto dto) {
-        return new CountDto(dto.getIdGood(), stockGoodDao.check(mapper.toEntity(dto)));
+        return new CountDto(dto.getGoodId(), stockGoodDao.check(mapper.toEntity(dto)));
     }
 
     public void fill(List<StockGoodDto> dto) {
